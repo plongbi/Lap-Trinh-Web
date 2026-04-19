@@ -1,43 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Button, Paper } from '@material-ui/core';
-import { Link, useParams } from 'react-router-dom';
-import fetchModel from '../../lib/fetchModelData';
+import React, { useState, useEffect } from "react";
+import { Typography, Button, Box } from "@material-ui/core";
+import { useParams, Link } from "react-router-dom";
+import fetchModel from "../../lib/fetchModelData";
 
-function UserDetail(props) {
+function UserDetail() {
   const { userId } = useParams();
   const [user, setUser] = useState(null);
 
-  // Khi userId trên URL thay đổi, useEffect sẽ chạy lại để fetch dữ liệu người mới
   useEffect(() => {
+    // Gọi API lấy thông tin chi tiết user
     fetchModel(`/user/${userId}`)
       .then((data) => {
         setUser(data);
       })
-      .catch((err) => console.log("Lỗi khi tải chi tiết người dùng:", err));
-  }, [userId]); // Dependency array chứa userId
+      .catch((err) => console.error("Lỗi khi lấy chi tiết user:", err));
+  }, [userId]); // Chạy lại nếu userId trên URL thay đổi
 
-  if (!user) return <Typography>Loading user details...</Typography>;
+  // Hiển thị chữ Loading trong lúc chờ API trả dữ liệu
+  if (!user) return <Typography>Loading...</Typography>;
 
   return (
-    <Paper style={{ padding: '20px', margin: '10px' }}>
+    <Box>
       <Typography variant="h4" gutterBottom>
         {user.first_name} {user.last_name}
       </Typography>
-      
-      <Typography variant="body1"><strong>Location:</strong> {user.location}</Typography>
-      <Typography variant="body1"><strong>Occupation:</strong> {user.occupation}</Typography>
-      <Typography variant="body1"><strong>Description:</strong> {user.description}</Typography>
+      <Typography variant="body1">
+        <strong>Location:</strong> {user.location}
+      </Typography>
+      <Typography variant="body1">
+        <strong>Description:</strong> {user.description}
+      </Typography>
+      <Typography variant="body1">
+        <strong>Occupation:</strong> {user.occupation}
+      </Typography>
 
-      <Button
-        variant="contained"
-        color="primary"
-        component={Link}
-        to={`/photos/${user._id}`}
-        style={{ marginTop: '20px' }}
-      >
-        View Photos
-      </Button>
-    </Paper>
+      <Box mt={3}>
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          to={`/photos/${user._id}`}
+        >
+          View Photos
+        </Button>
+      </Box>
+    </Box>
   );
 }
 

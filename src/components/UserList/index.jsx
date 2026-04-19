@@ -1,26 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { List, ListItem, ListItemText, Divider, Typography } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import fetchModel from '../../lib/fetchModelData'; // Import hàm fetch vừa viết
+import React, { useState, useEffect } from "react";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Divider,
+} from "@material-ui/core";
+import { Link } from "react-router-dom";
+// Import hàm fetchModel bạn vừa tạo
+import fetchModel from "../../lib/fetchModelData";
 
 function UserList() {
-  // Khởi tạo state để lưu danh sách người dùng
-  const [users, setUsers] = useState(null);
+  // Tạo state để lưu danh sách người dùng
+  const [users, setUsers] = useState([]);
 
-  // Dùng useEffect để gọi API 1 lần duy nhất khi component mount
+  // Dùng useEffect để gọi API ngay khi component được render
   useEffect(() => {
-    fetchModel('/user/list')
+    fetchModel("/user/list")
       .then((data) => {
-        setUsers(data);
+        setUsers(data); // Lưu dữ liệu từ backend vào state
       })
-      .catch((err) => console.log("Lỗi khi tải danh sách người dùng:", err));
-  }, []);
-
-  // Hiển thị trạng thái loading nếu dữ liệu chưa về
-  if (!users) return <Typography>Loading users...</Typography>;
+      .catch((err) => console.error("Lỗi khi lấy danh sách user:", err));
+  }, []); // Mảng rỗng [] nghĩa là chỉ gọi 1 lần khi load trang
 
   return (
     <div>
+      <Typography variant="h6">User List</Typography>
       <List component="nav">
         {users.map((user) => (
           <React.Fragment key={user._id}>
